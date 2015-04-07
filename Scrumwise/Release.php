@@ -29,7 +29,7 @@ class Release
 
 	public function hasBacklogItem(BacklogItem $backlogItem) {
 		foreach($this->assignedBacklogItemIDs as $key => $backlogItemID) {
-			if($backlogItemID == $backlogItem->getID())
+			if($backlogItemID == $backlogItem->id)
 				return true;
 		}
 		return false;

@@ -75,14 +75,14 @@ class BacklogItem
 	}
 
 	public function addTask($name) {
-		$obj = new Task($name, $this->getID());
+		$obj = new Task($name, $this->id);
 		$this->tasks[] = $obj;
 		$obj->create();
 		return $obj;
 	}
 	public function getTask($name) {
 		foreach($this->tasks as $obj) {
-			if($obj->getName() == $name)
+				if($obj->name == $name)
 				return $obj;
 		}
 		return NULL;
