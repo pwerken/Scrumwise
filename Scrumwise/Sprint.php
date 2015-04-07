@@ -3,6 +3,8 @@
 class Sprint
 	extends ScrumwiseObject
 {
+	use Taggable;
+
 	public function __construct($name) {
 		parent::__construct($name);
 
@@ -21,36 +23,6 @@ class Sprint
 		$this->data['teamSprintParticipations'] = [];
 
 		$this->hasSetter['externalID'] = true;
-	}
-
-	public function hasTag(Tag $tag) {
-		foreach($this->tagIDs as $key => $tagID) {
-			if($tagID == $tag->id)
-				return true;
-		}
-		return false;
-	}
-	public function tag(Tag $tag) {
-		if($this->hasTag($tag))
-			return;
-
-		$params = [];
-		$params['tagID'] = $tag->getID();
-		$params['objectType'] = get_class($this);
-		$params['objectID'] = $this->getID();
-		Scrumwise::call('addTagOnObject', $params);
-	}
-	public function untag(Tag $tag) {
-		foreach($this->tagIDs as $key => $tagID) {
-			if($tagID == $tag->getID())
-				unset($this->tagIDs[$key]);
-		}
-
-		$params = [];
-		$params['tagID'] = $tag->getID();
-		$params['objectType'] = get_class($this);
-		$params['objectID'] = $this->getID();
-		Scrumwise::call('removeTagFromObject', $params);
 	}
 
 	protected static function validateStatus($status) {
