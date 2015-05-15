@@ -63,10 +63,12 @@ class BacklogItem
 		return $this->roughEstimate;
 	}
 	public function getRemainingWork() {
-		if($this->remainingWork > 0)
-			return $this->remainingWork;
+		if($this->isDone())
+			return 0;
+		if($this->remainingWork < 0)
+			return $this->getEstimate();
 
-		return $this->getEstimate();
+		return $this->remainingWork;
 	}
 	public function setRoughEstimate($estimate, $unit) {
 		$this->data['roughEstimate'] = (float)$estimate;
@@ -89,6 +91,17 @@ class BacklogItem
 	}
 	public function getTasks() {
 		return $this->tasks;
+	}
+
+	public function isDone() {
+		switch($this->status) {
+		case 'Done':
+		case 'Sprint completed':
+		case 'Released':
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	protected function validatePriority($priority) {
