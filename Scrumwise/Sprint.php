@@ -25,6 +25,13 @@ class Sprint
 		$this->hasSetter['externalID'] = true;
 	}
 
+	public function isInPlanning() {
+		return ($obj->status == "In planning");
+	}
+	public function isInProgress() {
+		return ($obj->status == "In progress");
+	}
+
 	protected static function validateStatus($status) {
 		switch($status) {
 		case 'In planning':
