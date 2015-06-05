@@ -2,22 +2,24 @@
 
 abstract class ScrumwiseObject
 {
+	protected $project;
 	protected $data = [];
 	protected $hasSetter = [];
 	protected $canCreate = [];
 	protected $canDelete = false;
 
-	protected function __construct($name) {
+	protected function __construct($project, $name) {
+		$this->project = $project;
 		$this->data['name'] = $name;
 		$this->data['id'] = null;
 	}
 
-	public static function instantiate($data) {
+	public static function instantiate($project, $data) {
 		$class = get_called_class();
 		if($data['objectType'] != $class)
 			return NULL;
 
-		$obj = new $class(NULL);
+		$obj = new $class($project, NULL);
 
 		unset($data['objectType']);
 		foreach($data as $key => $val) {
@@ -33,7 +35,7 @@ abstract class ScrumwiseObject
 						$obj->data[$key][] = $sub;
 						continue;
 					}
-					$obj->data[$key][] = $sub['objectType']::instantiate($sub);
+					$obj->data[$key][] = $sub['objectType']::instantiate($project, $sub);
 				}
 				continue;
 			}
@@ -62,7 +64,7 @@ abstract class ScrumwiseObject
 		$this->setter(ucfirst($field), [$field], $reqObj);
 	}
 
-	public function create($projectID = NULL) {
+	public function create() {
 		if(!is_array($this->canCreate)) {
 			$trace = debug_backtrace();
 			trigger_error('Illegal call to create()'
@@ -73,7 +75,7 @@ abstract class ScrumwiseObject
 		}
 
 		if(array_key_exists('projectID', $this->canCreate))
-			$this->data['projectID'] = $projectID;
+			$this->data['projectID'] = $this->project->id;
 
 		$args = [];
 		foreach($this->canCreate as $field => $val)

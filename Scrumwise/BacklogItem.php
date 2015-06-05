@@ -77,9 +77,9 @@ class BacklogItem
 	}
 
 	public function addTask($name) {
-		$obj = new Task($name);
+		$obj = new Task($this->project, $name);
 		$this->tasks[] = $obj;
-		$obj->create($this->projectID, $this->id);
+		$obj->create($this->id);
 		return $obj;
 	}
 	public function getTask($name) {

@@ -28,6 +28,10 @@ class Project
 		$this->hasSetter['externalID'] = true;
 	}
 
+	public static function instantiate($project, $data) {
+		return parent::instantiate(self, $data);
+	}
+
 	protected function validateDetailedEstimateUnit($unit) {
 		return $this->validateUnit($unit);
 	}
@@ -48,7 +52,7 @@ class Project
 	}
 
 	public function addBacklogItem($name) {
-		$obj = new BacklogItem($name);
+		$obj = new BacklogItem($this, $name);
 		$this->backlogItems[] = $obj;
 		$obj->create($this->id);
 		return $obj;
@@ -116,9 +120,16 @@ class Project
 		}
 		return NULL;
 	}
+	public function getCurrentSprint() {
+		foreach($this->sprints as $obj) {
+			if($obj->isInProgress())
+				return $obj;
+		}
+		return NULL;
+	}
 
 	public function addTag($name) {
-		$obj = new Tag($name);
+		$obj = new Tag($this, $name);
 		$this->tags[] = $obj;
 		$obj->create($this->id);
 		return $obj;

@@ -41,8 +41,8 @@ class Task
 		$this->hasSetter['name'] = true;
 	}
 
-	public function create($projectID = NULL, $backlogItemID = NULL) {
+	public function create($backlogItemID = NULL) {
 		$this->data['backlogItemID'] = $backlogItemID;
-		parent::create($projectID);
+		parent::create();
 	}
 }

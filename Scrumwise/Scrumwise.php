@@ -56,7 +56,7 @@ class Scrumwise
 		if(empty(self::$data)) {
 			if($name === NULL) {
 				self::$data = self::getProjectData(self::$project);
-				return Project::instantiate(self::$data['projects'][0]);
+				return Project::instantiate(NULL, self::$data['projects'][0]);
 			}
 			self::$data = self::call('getData', ['includeProperties' => NULL]);
 		}
@@ -77,7 +77,7 @@ class Scrumwise
 			$p = $data['projects'][0];
 			self::$data['projects'][$key] = $p;
 		}
-		return Project::instantiate($p);
+		return Project::instantiate(NULL, $p);
 	}
 
 	private static function requireConfigured() {
