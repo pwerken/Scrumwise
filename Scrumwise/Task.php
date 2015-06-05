@@ -5,8 +5,8 @@ class Task
 {
 	use Taggable;
 
-	public function __construct($name) {
-		parent::__construct($name);
+	public function __construct($project, $name) {
+		parent::__construct($project, $name);
 
 		$this->data['externalID'] = NULL;
 		$this->data['taskNumber'] = NULL;

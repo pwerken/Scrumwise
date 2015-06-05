@@ -4,7 +4,7 @@ class Project
 	extends ScrumwiseObject
 {
 	public function __construct($name) {
-		parent::__construct($name);
+		parent::__construct(NULL, $name);
 
 		$this->data['description'] = NULL;
 		$this->data['externalID'] = NULL;
@@ -28,8 +28,8 @@ class Project
 		$this->hasSetter['externalID'] = true;
 	}
 
-	public static function instantiate($project, $data) {
-		return parent::instantiate(self, $data);
+	public static function instantiate($data) {
+		return parent::instantiate(NULL, $data);
 	}
 
 	protected function validateDetailedEstimateUnit($unit) {

@@ -20,6 +20,8 @@ abstract class ScrumwiseObject
 			return NULL;
 
 		$obj = new $class($project, NULL);
+		if($class == "Project")
+			$project = $obj;
 
 		unset($data['objectType']);
 		foreach($data as $key => $val) {
