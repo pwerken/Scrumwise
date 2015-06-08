@@ -8,6 +8,7 @@ require_once 'Release.php';
 require_once 'Sprint.php';
 require_once 'Tag.php';
 require_once 'Task.php';
+require_once 'Team.php';
 
 Scrumwise::configure(require 'config.php');
 

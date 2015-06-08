@@ -56,6 +56,10 @@ class BacklogItem
 		$this->hasSetter['type'] = true;
 	}
 
+	public function getTeam() {
+		return $this->project->getTeamByID($this->teamID);
+	}
+
 	public function getEstimate() {
 		if($this->estimate > 0)
 			return $this->estimate;

@@ -141,4 +141,12 @@ class Project
 		}
 		return NULL;
 	}
+
+	public function getTeamByID($teamID) {
+		foreach($this->teams as $obj) {
+			if($obj->id == $teamID)
+				return $obj;
+		}
+		return NULL;
+	}
 }
