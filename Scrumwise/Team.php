@@ -9,7 +9,7 @@ class Team
 		$this->data['externalID'] = NULL;
 		$this->data['projectID'] = NULL;
 		$this->data['description'] = NULL;
-		$this->data['teamMembersIDs'] = [];
+		$this->data['teamMemberIDs'] = [];
 
 		$this->hasSetter['description'] = true;
 	}
