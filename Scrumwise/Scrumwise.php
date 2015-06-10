@@ -17,7 +17,7 @@ class Scrumwise
 	private static $user = NULL;
 	private static $pass = NULL;
 
-	private static $project= '105493-0-5';
+	private static $project = '105493-0-5';
 	private static $data = [];
 
 	public static function configure($arr) {
@@ -25,33 +25,15 @@ class Scrumwise
 		self::$pass = $arr['key'];
 	}
 	public static function call($method, $params) {
-		self::requireConfigured();
-
-		$url = "https://api.scrumwise.com/service/api/v1/$method";
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_USERPWD, self::$user.':'.self::$pass);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-
-		$data = json_decode(curl_exec($ch), true);
-
-		curl_close($ch);
+		$data = self::apiCall($method, $params);
 
 		if(array_key_exists('result', $data))
 			return $data['result'];
 
-		if($data['objectType'] == 'Error') {
-			var_dump([$method, $params]);
-			var_dump($data);
-			die;
-		}
-
 		var_dump($data);
 		return NULL;
 	}
+
 	public static function getProject($name = NULL) {
 		$retrieve = true;
 		if(empty(self::$data)) {
@@ -70,7 +52,7 @@ class Scrumwise
 			}
 		}
 		if($i < 0) {
-			echo "project '$name' not found\n";
+			error_log("project '$name' not found");
 			die;
 		}
 		if($retrieve) {
@@ -81,14 +63,37 @@ class Scrumwise
 		return Project::instantiate($p);
 	}
 
-	private static function requireConfigured() {
+	private static function apiCall($method, $params) {
 		if(self::$user === NULL || self::$pass === NULL) {
-			echo "Not configured!\n";
+			error_log("Not configured!");
 			die;
 		}
+
+		$url = "https://api.scrumwise.com/service/api/v1/$method";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_USERPWD, self::$user.':'.self::$pass);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+
+		$data = json_decode(curl_exec($ch), true);
+		curl_close($ch);
+
+		if($data['objectType'] == 'Error') {
+			var_dump([$method, $params]);
+			var_dump($data);
+			die;
+		}
+
+		return $data;
 	}
-	private static function getProjectData($projectID) {
-		return self::call('getData',
+	private static function getDataVersion() {
+		return self::call('getDataVersion', []);
+	}
+	private static function getData($projectID) {
+		return self::apiCall('getData',
 				[ 'projectIDs' => $projectID
 				, 'includeProperties' => implode(',',
 						array('Project.backlogItems'
@@ -101,4 +106,12 @@ class Scrumwise
 				]);
 	}
 
+	private static function getProjectData($projectID) {
+		$data = unserialize(file_get_contents($projectID));
+		if($data === false || $data['dataVersion'] != self::getDataVersion()) {
+			$data = self::getData($projectID);
+			file_put_contents($projectID, serialize($data));
+		}
+		return $data['result'];
+	}
 }
