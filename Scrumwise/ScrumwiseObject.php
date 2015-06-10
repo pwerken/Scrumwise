@@ -26,7 +26,7 @@ abstract class ScrumwiseObject
 		unset($data['objectType']);
 		foreach($data as $key => $val) {
 			if(!isset($obj->$key)) {
-				echo "skipping '$class.$key' ...\n";
+				error_log("skipping '$class.$key' ...");
 				continue;
 			}
 			if(is_array($val)) {
