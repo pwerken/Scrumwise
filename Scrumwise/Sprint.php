@@ -26,10 +26,14 @@ class Sprint
 	}
 
 	public function isInPlanning() {
-		return ($obj->status == "In planning");
+		return ($this->status == "In planning");
 	}
 	public function isInProgress() {
-		return ($obj->status == "In progress");
+		return ($this->status == "In progress");
+	}
+
+	public function getBacklogItems() {
+		return $this->project->getBacklogItemsBySprint($this);
 	}
 
 	protected static function validateStatus($status) {
