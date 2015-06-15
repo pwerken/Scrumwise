@@ -108,7 +108,7 @@ class Scrumwise
 
 	private static function getProjectData($projectID) {
 		$file = $projectID.".cache";
-		$data = unserialize(file_get_contents($file));
+		$data = unserialize(@file_get_contents($file));
 		if($data === false || $data['dataVersion'] != self::getDataVersion()) {
 			$data = self::getData($projectID);
 			file_put_contents($file, serialize($data));
