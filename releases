@@ -1,0 +1,52 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+$out = fopen('php://stdout', 'w');
+
+fputcsv($out
+		, [ "#release", "total", "done", "todo", "build-todo", "app-todo" ]
+		, ';'
+		);
+
+foreach($p->releases as $release) {
+
+	$releaseTotal = 0;
+	$releaseDone  = 0;
+	$releaseApp   = 0;
+	$releaseBuild = 0;
+	$releaseTodo  = 0;
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem) {
+		$done = false;
+
+		$pts = $backlogItem->getEstimate();
+		if($pts < 0) $pts = 0;
+
+		$releaseTotal += $pts;
+
+		if($backlogItem->isDone()) {
+			$releaseDone += $pts;
+			continue;
+		}
+		$releaseTodo += $pts;
+
+		switch(substr($backlogItem->name, 0, 3)) {
+		case '3B ':
+		case 'GUI':
+		case 'App':
+		case 'sim':
+			$releaseApp += $pts;
+			break;
+		default:
+			$releaseBuild += $pts;
+		}
+	}
+	fputcsv($out
+			, [ $release->name, $releaseTotal, $releaseDone, $releaseTodo
+			  , $releaseBuild, $releaseApp]
+			, ';'
+			);
+}
+fclose($out);

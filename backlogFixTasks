@@ -1,0 +1,29 @@
+#!/usr/bin/php
+<?php
+/* for backlog item's NOT done and NOT in current Sprint
+		- 'pre-test uitvoeren' verwijderen
+		- 'STD schrijven' => + 'pre-test doen' + 'SDD reviewen'
+		- 'STD review verwerken' => + 'pre-test draaien'
+ */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+$s = $p->getCurrentSprint();
+
+foreach($p->backlogItems as $bl) {
+	if($bl->status == 'Done')
+		continue;
+	if($bl->status == 'Sprint completed')
+		continue;
+	if($bl->sprintID == $s->id)
+		continue;
+
+	$t = $bl->getTask('STD opstellen');
+	if(!$t) continue;
+
+	echo $bl->name."\n";
+	$t->name = "STD opstellen + SDD review + pre-test uitvoeren";
+	$t = $bl->getTask('Pre-Test uitvoeren');
+	if($t) $t->delete();
+}

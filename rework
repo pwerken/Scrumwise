@@ -1,0 +1,51 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+$out = fopen('php://stdout', 'w');
+
+fputcsv($out
+		, [ "#release", "total", "done", "rework-done", "todo", "rework-todo" ]
+		, ';'
+		);
+
+$tRE = $p->getTag('REWORK');
+
+foreach($p->releases as $release) {
+	$releaseTotal = 0;
+	$releaseDone  = 0;
+	$releaseTodo  = 0;
+	$releaseRDone = 0;
+	$releaseRTodo = 0;
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem) {
+
+		$rework = $backlogItem->hasTag($tRE);
+		$pts = $backlogItem->getEstimate();
+		if($pts < 0) $pts = 0;
+
+		$releaseTotal += $pts;
+
+		switch($backlogItem->status) {
+		case 'Done':
+		case 'Sprint completed':
+		case 'Released':
+			$releaseDone += $pts;
+			if($rework)
+				$releaseRDone += $pts;
+			$done = true;
+			break;
+		default:
+			$releaseTodo += $pts;
+			if($rework)
+				$releaseRTodo += $pts;
+		}
+	}
+	fputcsv($out
+			, [ $release->name, $releaseTotal, $releaseDone, $releaseRDone
+			  , $releaseTodo, $releaseRTodo]
+			, ';'
+			);
+}
+fclose($out);

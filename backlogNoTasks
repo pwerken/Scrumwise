@@ -1,0 +1,19 @@
+#!/usr/bin/php
+<?php
+/* List of backlog items that have NO tasks. */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+foreach($p->backlogItems as $bl) {
+	if(count($bl->tasks) > 0)
+		continue;
+
+	if($bl->status == 'Done')
+		continue;
+	if($bl->status == 'Sprint completed')
+		continue;
+
+	echo $bl->name."\n";
+}

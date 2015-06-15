@@ -1,0 +1,13 @@
+#!/usr/bin/php
+<?php
+/* List of backlog items where the roughEstimate != detailed estimate. */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+foreach($p->backlogItems as $bl) {
+	if($bl->roughEstimate == $bl->estimate)
+		continue;
+	echo $bl->name."\n";
+}

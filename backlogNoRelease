@@ -1,0 +1,13 @@
+#!/usr/bin/php
+<?php
+/* List of backlog items that are NOT assigned to a release. */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+foreach($p->backlogItems as $bl) {
+	if($bl->releaseID > 0)
+		continue;
+	echo $bl->name."\n";
+}

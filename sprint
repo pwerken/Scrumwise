@@ -1,0 +1,36 @@
+#!/usr/bin/php
+<?php
+/* output (in csv format) status of backlog items of a specific sprint */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+if(empty($argv[1])) {
+	$sprint = $p->getCurrentSprint();
+	if(!$sprint) {
+		exit;
+	}
+	$items = $sprint->getBacklogItems();
+}
+else
+	$items = $p->getBacklogItemsBySprint($argv[1]);
+
+$out = fopen('php://stdout', 'w');
+$wrk = $pts = $cnt = 0;
+fputcsv($out, ['#team', 'backlogitem'. 'werk', 'totaal'], ';');
+foreach($items as $b) {
+	$wrk += $b->getRemainingWork();
+	$pts += $b->getEstimate();
+	$cnt++;
+	fputcsv($out
+			,	[ $b->getTeam()->name
+				, $b->name
+				, $b->getRemainingWork()
+				, $b->getEstimate()
+				]
+			, ';'
+			);
+}
+fputcsv($out, ['', $cnt . ' items', $wrk, $pts], ';');
+fclose($out);
