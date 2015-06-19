@@ -18,7 +18,7 @@ else
 
 $out = fopen('php://stdout', 'w');
 $wrk = $pts = $cnt = 0;
-fputcsv($out, ['#team', 'backlogitem'. 'werk', 'totaal'], ';');
+fputcsv($out, ['#team', 'backlogitem', 'werk', 'totaal'], ';');
 foreach($items as $b) {
 	$wrk += $b->getRemainingWork();
 	$pts += $b->getEstimate();
