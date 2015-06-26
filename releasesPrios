@@ -1,0 +1,79 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+$p = Scrumwise::getProject();
+
+$out = fopen('php://stdout', 'w');
+
+fputcsv($out
+		, [ "#release", "prio", "total", "done", "todo"
+		  , "build-todo", "app-todo", "sp-todo" ]
+		, ';'
+		);
+
+$SIM = $p->getTag('SIM');
+$SP  = $p->getTag('SP');
+
+$VKF1 = $p->getTag('VKF1');
+$VKF2 = $p->getTag('VKF2');
+$VKF3 = $p->getTag('VKF3');
+$CAL  = $p->getTag('!C');
+$BB12 = $p->getTag('BB-2012');
+$OVER = $p->getTag('Overig');
+
+$PRIOS = [ $VKF1, $VKF2, $VKF3, $CAL, $BB12 ];
+
+foreach($p->releases as $release)
+{
+	foreach($PRIOS as $PRIO)
+	{
+		$releaseTotal = 0;
+		$releaseDone  = 0;
+		$releaseTodo  = 0;
+		$releaseBuild = 0;
+		$releaseApp   = 0;
+		$releaseSP    = 0;
+		$print = false;
+
+		foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
+		{
+			if(!$backlogItem->hasTag($PRIO))
+				continue;
+			$print = true;
+
+			$pts = $backlogItem->getEstimate();
+			if($pts < 0) $pts = 0;
+
+			$releaseTotal += $pts;
+
+			if($backlogItem->isDone()) {
+				$releaseDone += $pts;
+				continue;
+			}
+			$releaseTodo += $pts;
+
+			if($backlogItem->hasTag($SP)) {
+				$releaseSP += $pts;
+				continue;
+			}
+
+			if($backlogItem->hasTag($SIM)
+			|| strpos($backlogItem->name, "Applicatie") !== FALSE
+			|| strpos($backlogItem->name, "Cluster") !== FALSE) {
+				$releaseApp += $pts;
+				continue;
+			}
+
+			$releaseBuild += $pts;
+		}
+		if($print)
+			fputcsv($out
+					, [ $release->name, $PRIO->name
+					  , $releaseTotal, $releaseDone, $releaseTodo
+					  , $releaseBuild, $releaseApp, $releaseSP]
+					, ';'
+					);
+	}
+}
+fclose($out);
