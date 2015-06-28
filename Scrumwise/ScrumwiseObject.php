@@ -67,14 +67,8 @@ abstract class ScrumwiseObject
 	}
 
 	public function create() {
-		if(!is_array($this->canCreate)) {
-			$trace = debug_backtrace();
-			trigger_error('Illegal call to create()'
-							. ' in ' . $trace[0]['file']
-							.  ' on line ' . $trace[0]['line']
-						, E_USER_NOTICE);
-			return;
-		}
+		if(!is_array($this->canCreate))
+			return $this->illegalCall();
 
 		if(array_key_exists('projectID', $this->canCreate))
 			$this->data['projectID'] = $this->project->id;
@@ -86,14 +80,9 @@ abstract class ScrumwiseObject
 		$this->data['id'] = Scrumwise::call('add'.get_class($this), $args);
 	}
 	public function delete() {
-		if(!$this->canDelete) {
-			$trace = debug_backtrace();
-			trigger_error('Illegal call to delete()'
-							. ' in ' . $trace[0]['file']
-							.  ' on line ' . $trace[0]['line']
-						, E_USER_NOTICE);
-			return;
-		}
+		if(!$this->canDelete)
+			return $this->illegalCall();
+
 		$class = get_class($this);
 		$args = [];
 		$args[lcfirst($class).'ID'] = $this->data['id'];
@@ -114,14 +103,8 @@ abstract class ScrumwiseObject
 		//		save() if created
 
 		if(!array_key_exists($name, $this->hasSetter)
-		|| !array_key_exists($name, $this->data)) {
-			$trace = debug_backtrace();
-			trigger_error('Undefined property via __set(): ' . $name
-							. ' in ' . $trace[0]['file']
-							.  ' on line ' . $trace[0]['line']
-						, E_USER_NOTICE);
-			return;
-		}
+		|| !array_key_exists($name, $this->data))
+			return $this->illegalCall();
 
 		$m = 'validate'.ucfirst($name);
 		if(method_exists($this, $m))
@@ -131,14 +114,8 @@ abstract class ScrumwiseObject
 		$this->save($name);
 	}
 	public function &__get($name) {
-		if(!array_key_exists($name, $this->data)) {
-			$trace = debug_backtrace();
-			trigger_error('Undefined property via __get(): ' . $name
-							. ' in ' . $trace[0]['file']
-							.  ' on line ' . $trace[0]['line']
-						, E_USER_NOTICE);
-			return NULL;
-		}
+		if(!array_key_exists($name, $this->data))
+			return $this->illegalCall();
 
 		return $this->data[$name];
 	}
@@ -147,5 +124,13 @@ abstract class ScrumwiseObject
 	}
 	public function __unset($name) {
 		return $this->__set($name, NULL);
+	}
+
+	private function illegalCall() {
+		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+		error_log('Illegal call to '.$trace[1]['function'].'() '
+						. ' in ' . $trace[1]['file']
+						.  ' on line ' . $trace[1]['line']);
+		return NULL;
 	}
 }
