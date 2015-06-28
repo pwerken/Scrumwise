@@ -3,49 +3,50 @@
 require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
+$REWORK = $p->getTag('REWORK');
+
+$total['Total'] = 0;
+$total['Done']  = 0;
+$total['Todo']  = 0;
+$total['Rework-Done'] = 0;
+$total['Rework-Todo'] = 0;
 
 $out = fopen('php://stdout', 'w');
+fputcsv($out, [ "#release" ] + array_keys($total), ';');
 
-fputcsv($out
-		, [ "#release", "total", "done", "rework-done", "todo", "rework-todo" ]
-		, ';'
-		);
+foreach($p->releases as $release)
+{
+	$stats = [];
+	foreach($total as $key => $val)
+		$stats[$key] = 0;
 
-$tRE = $p->getTag('REWORK');
-
-foreach($p->releases as $release) {
-	$releaseTotal = 0;
-	$releaseDone  = 0;
-	$releaseTodo  = 0;
-	$releaseRDone = 0;
-	$releaseRTodo = 0;
-	foreach($p->getBacklogItemsByRelease($release) as $backlogItem) {
-
-		$rework = $backlogItem->hasTag($tRE);
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
+	{
+		$isRework = $backlogItem->hasTag($REWORK);
 		$pts = $backlogItem->getEstimate();
 		if($pts < 0) $pts = 0;
 
-		$releaseTotal += $pts;
+		$stats['Total'] += $pts;
 
 		switch($backlogItem->status) {
 		case 'Done':
 		case 'Sprint completed':
 		case 'Released':
-			$releaseDone += $pts;
-			if($rework)
-				$releaseRDone += $pts;
-			$done = true;
+			$stats['Done'] += $pts;
+			if($isRework)
+				$stats['Rework-Done'] += $pts;
 			break;
 		default:
-			$releaseTodo += $pts;
-			if($rework)
-				$releaseRTodo += $pts;
+			$stats['Todo'] += $pts;
+			if($isRework)
+				$stats['Rework-Todo'] += $pts;
 		}
 	}
-	fputcsv($out
-			, [ $release->name, $releaseTotal, $releaseDone, $releaseRDone
-			  , $releaseTodo, $releaseRTodo]
-			, ';'
-			);
+	fputcsv($out, [ $release->name ] + $stats, ';');
+
+	foreach($stats as $key => $val)
+		$total[$key] += $val;
 }
+
+fputcsv($out, [ "Total" ] + $total, ';');
 fclose($out);

@@ -3,50 +3,60 @@
 require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
+$IT  = $p->getTag('IT');
+$SIM = $p->getTag('SIM');
+$SP  = $p->getTag('SP');
+
+$total['Total'] = 0;
+$total['Done']  = 0;
+$total['Todo']  = 0;
+$total['ToDo-Module'] = 0;
+$total['ToDo-Cluster'] = 0;
+$total['ToDo-SP'] = 0;
 
 $out = fopen('php://stdout', 'w');
+fputcsv($out, [ "#release" ] + array_keys($total), ';');
 
-fputcsv($out
-		, [ "#release", "total", "done", "todo", "build-todo", "app-todo" ]
-		, ';'
-		);
+foreach($p->releases as $release)
+{
+	$stats = [];
+	foreach($total as $key => $val)
+		$stats[$key] = 0;
 
-foreach($p->releases as $release) {
-
-	$releaseTotal = 0;
-	$releaseDone  = 0;
-	$releaseApp   = 0;
-	$releaseBuild = 0;
-	$releaseTodo  = 0;
-	foreach($p->getBacklogItemsByRelease($release) as $backlogItem) {
-		$done = false;
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
+	{
+		if($backlogItem->hasTag($IT))
+			continue;
 
 		$pts = $backlogItem->getEstimate();
 		if($pts < 0) $pts = 0;
 
-		$releaseTotal += $pts;
+		$stats['Total'] += $pts;
 
 		if($backlogItem->isDone()) {
-			$releaseDone += $pts;
+			$stats['Done'] += $pts;
 			continue;
 		}
-		$releaseTodo += $pts;
+		$stats['Todo'] += $pts;
 
-		switch(substr($backlogItem->name, 0, 3)) {
-		case '3B ':
-		case 'GUI':
-		case 'App':
-		case 'sim':
-			$releaseApp += $pts;
-			break;
-		default:
-			$releaseBuild += $pts;
+		if($backlogItem->hasTag($SP)) {
+			$stats['ToDo-SP'] += $pts;
+			continue;
 		}
+		if($backlogItem->hasTag($SIM)
+		|| strpos($backlogItem->name, 'Cluster') !== FALSE
+		|| strpos($backlogItem->name, 'Applicatie') !== FALSE) {
+			$stats['ToDo-Cluster'] += $pts;
+			continue;
+		}
+
+		$stats['ToDo-Module'] += $pts;
 	}
-	fputcsv($out
-			, [ $release->name, $releaseTotal, $releaseDone, $releaseTodo
-			  , $releaseBuild, $releaseApp]
-			, ';'
-			);
+	fputcsv($out, [ $release->name ] + $stats, ';');
+
+	foreach($stats as $key => $val)
+		$total[$key] += $val;
 }
+
+fputcsv($out, [ "Total" ] + $total, ';');
 fclose($out);

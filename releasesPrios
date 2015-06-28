@@ -4,14 +4,7 @@ require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
 
-$out = fopen('php://stdout', 'w');
-
-fputcsv($out
-		, [ "#release", "prio", "total", "done", "todo"
-		  , "build-todo", "app-todo", "sp-todo" ]
-		, ';'
-		);
-
+$IT  = $p->getTag('IT');
 $SIM = $p->getTag('SIM');
 $SP  = $p->getTag('SP');
 
@@ -22,58 +15,62 @@ $CAL  = $p->getTag('!C');
 $BB12 = $p->getTag('BB-2012');
 $OVER = $p->getTag('Overig');
 
-$PRIOS = [ $VKF1, $VKF2, $VKF3, $CAL, $BB12 ];
+$PRIOS = [ $VKF1, $VKF2, $VKF3, $CAL, $BB12, $OVER ];
+
+$total['Total'] = 0;
+$total['Done']  = 0;
+$total['Todo']  = 0;
+$total['ToDo-Module'] = 0;
+$total['ToDo-Cluster'] = 0;
+$total['ToDo-SP'] = 0;
+
+$out = fopen('php://stdout', 'w');
+fputcsv($out, [ "#release", "prio" ] + array_keys($total), ';');
 
 foreach($p->releases as $release)
 {
 	foreach($PRIOS as $PRIO)
 	{
-		$releaseTotal = 0;
-		$releaseDone  = 0;
-		$releaseTodo  = 0;
-		$releaseBuild = 0;
-		$releaseApp   = 0;
-		$releaseSP    = 0;
+		$stats = [];
+		foreach($total as $key => $val)
+			$stats[$key] = 0;
+
 		$print = false;
 
 		foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
 		{
-			if(!$backlogItem->hasTag($PRIO))
+			if(!$backlogItem->hasTag($PRIO)
+			|| $backlogItem->hasTag($IT))
 				continue;
+
 			$print = true;
 
 			$pts = $backlogItem->getEstimate();
 			if($pts < 0) $pts = 0;
 
-			$releaseTotal += $pts;
+			$stats['Total'] += $pts;
 
 			if($backlogItem->isDone()) {
-				$releaseDone += $pts;
+				$stats['Done'] += $pts;
 				continue;
 			}
-			$releaseTodo += $pts;
+			$stats['Todo'] += $pts;
 
 			if($backlogItem->hasTag($SP)) {
-				$releaseSP += $pts;
+				$stats['ToDo-SP'] += $pts;
 				continue;
 			}
-
 			if($backlogItem->hasTag($SIM)
-			|| strpos($backlogItem->name, "Applicatie") !== FALSE
-			|| strpos($backlogItem->name, "Cluster") !== FALSE) {
-				$releaseApp += $pts;
+			|| strpos($backlogItem->name, 'Cluster') !== FALSE
+			|| strpos($backlogItem->name, 'Applicatie') !== FALSE) {
+				$stats['ToDo-Cluster'] += $pts;
 				continue;
 			}
 
-			$releaseBuild += $pts;
+			$stats['ToDo-Module'] += $pts;
 		}
-		if($print)
-			fputcsv($out
-					, [ $release->name, $PRIO->name
-					  , $releaseTotal, $releaseDone, $releaseTodo
-					  , $releaseBuild, $releaseApp, $releaseSP]
-					, ';'
-					);
+		if(!$print) continue;
+		fputcsv($out, [ $release->name, $PRIO->name ] + $stats, ';');
 	}
 }
 fclose($out);
