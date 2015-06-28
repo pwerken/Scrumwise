@@ -5,9 +5,10 @@
 require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
+$IT = $p->getTag('IT');
 
 foreach($p->backlogItems as $bl) {
-	if(count($bl->tasks) > 0)
+	if(count($bl->tasks) > 0 || $bl->hasTag($IT))
 		continue;
 
 	if($bl->status == 'Done')

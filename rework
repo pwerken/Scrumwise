@@ -4,6 +4,7 @@ require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
 $REWORK = $p->getTag('REWORK');
+$IT = $p->getTag('IT');
 
 $total['Total'] = 0;
 $total['Done']  = 0;
@@ -22,6 +23,8 @@ foreach($p->releases as $release)
 
 	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
 	{
+		if($backlogItem->hasTag($IT)) continue;
+
 		$isRework = $backlogItem->hasTag($REWORK);
 		$pts = $backlogItem->getEstimate();
 		if($pts < 0) $pts = 0;
