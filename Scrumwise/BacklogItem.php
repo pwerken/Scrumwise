@@ -56,6 +56,9 @@ class BacklogItem
 		$this->hasSetter['type'] = true;
 	}
 
+	public function getSprint() {
+		return $this->project->getSprintByID($this->sprintID);
+	}
 	public function getTeam() {
 		return $this->project->getTeamByID($this->teamID);
 	}

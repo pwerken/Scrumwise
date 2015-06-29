@@ -113,6 +113,13 @@ class Project
 		return NULL;
 	}
 
+	public function getCurrentSprint() {
+		foreach($this->sprints as $obj) {
+			if($obj->isInProgress())
+				return $obj;
+		}
+		return NULL;
+	}
 	public function getSprint($name) {
 		foreach($this->sprints as $obj) {
 			if($obj->name == $name)
@@ -120,9 +127,11 @@ class Project
 		}
 		return NULL;
 	}
-	public function getCurrentSprint() {
+	public function getSprintById($sprintID) {
+		if(is_null($sprintID))
+			return NULL;
 		foreach($this->sprints as $obj) {
-			if($obj->isInProgress())
+			if($obj->id == $sprintID)
 				return $obj;
 		}
 		return NULL;
@@ -143,6 +152,8 @@ class Project
 	}
 
 	public function getTeamByID($teamID) {
+		if(is_null($teamID))
+			return NULL;
 		foreach($this->teams as $obj) {
 			if($obj->id == $teamID)
 				return $obj;
