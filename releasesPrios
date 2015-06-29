@@ -17,6 +17,7 @@ $OVER = $p->getTag('Overig');
 
 $PRIOS = [ $VKF1, $VKF2, $VKF3, $CAL, $BB12, $OVER ];
 
+$total[0] = 0;
 $total['Total'] = 0;
 $total['Done']  = 0;
 $total['Todo']  = 0;

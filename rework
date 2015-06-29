@@ -6,6 +6,7 @@ $p = Scrumwise::getProject();
 $REWORK = $p->getTag('REWORK');
 $IT = $p->getTag('IT');
 
+$total[0] = 0;
 $total['Total'] = 0;
 $total['Done']  = 0;
 $total['Todo']  = 0;
