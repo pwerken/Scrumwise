@@ -6,7 +6,7 @@ require_once 'Scrumwise/Scrumwise.php';
 
 $p = Scrumwise::getProject();
 
-$pattern = '/^Mantis3B#(\d+) (.impact: (\w+).)?(.*)$/';
+$pattern = '/Mantis3B#(\d+)( .impact: (\w+).)?(.*)$/i';
 
 $out = fopen('php://stdout', 'w');
 fputcsv($out,
