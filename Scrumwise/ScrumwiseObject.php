@@ -110,6 +110,9 @@ abstract class ScrumwiseObject
 		if(method_exists($this, $m))
 			$value = call_user_method($m, $this, $value);
 
+		if($this->data[$name] == $value)
+			return;
+
 		$this->data[$name] = $value;
 		$this->save($name);
 	}
