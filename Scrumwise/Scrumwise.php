@@ -16,6 +16,7 @@ class Scrumwise
 {
 	private static $user = NULL;
 	private static $pass = NULL;
+	private static $update = true;
 
 	private static $project = '105493-0-5';
 	private static $data = [];
@@ -24,6 +25,11 @@ class Scrumwise
 		self::$user = $arr['user'];
 		self::$pass = $arr['key'];
 	}
+
+	public static function updateCache($update) {
+		self::$update = (bool)$update;
+	}
+
 	public static function call($method, $params) {
 		$data = self::apiCall($method, $params);
 
@@ -109,7 +115,8 @@ class Scrumwise
 	private static function getProjectData($projectID) {
 		$file = $projectID.".cache";
 		$data = unserialize(@file_get_contents($file));
-		if($data === false || $data['dataVersion'] != self::getDataVersion()) {
+		if($data === false
+		|| ($data['dataVersion'] != self::getDataVersion() && self::$update)) {
 			$data = self::getData($projectID);
 			file_put_contents($file, serialize($data));
 		}
