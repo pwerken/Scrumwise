@@ -1,0 +1,104 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
+$p = Scrumwise::getProject();
+
+$IT  = $p->getTag('IT');
+$SIM = $p->getTag('SIM');
+$SP  = $p->getTag('SP');
+
+$stats[0] = 0;
+$stats['Total'] = 0;
+$stats['Done']  = 0;
+$stats['Todo']  = 0;
+$stats['ToDo-Module'] = 0;
+$stats['ToDo-Cluster'] = 0;
+$stats['ToDo-SP'] = 0;
+$stats['ToDo-UNASSIGNED'] = 0;
+
+foreach($p->sprints as $sprint) {
+	$stats[$sprint->name] = 0;
+}
+
+$out = fopen('php://stdout', 'w');
+fputcsv($out, [ "#release" ] + array_keys($stats), ';');
+
+foreach($p->releases as $release)
+{
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
+	{
+		if($backlogItem->hasTag($IT))
+			continue;
+
+		$pts = $backlogItem->getEstimate();
+		if($pts < 0) $pts = 0;
+
+		$stats['Total'] += $pts;
+		if($backlogItem->sprintID > 0)
+			$stats[$backlogItem->getSprint()->name] += $pts;
+
+		if($backlogItem->isDone()) {
+			$stats['Done'] += $pts;
+			continue;
+		}
+		if($backlogItem->sprintID == 0)
+			$stats['ToDo-UNASSIGNED'] += $pts;
+
+		$stats['Todo'] += $pts;
+
+		if($backlogItem->hasTag($SP)) {
+			$stats['ToDo-SP'] += $pts;
+			continue;
+		}
+		if($backlogItem->hasTag($SIM)
+		|| strpos($backlogItem->name, 'Cluster') !== FALSE
+		|| strpos($backlogItem->name, 'Applicatie') !== FALSE) {
+			$stats['ToDo-Cluster'] += $pts;
+			continue;
+		}
+
+	}
+	fputcsv($out, [ $release->name ] + $stats, ';');
+	foreach($stats as $key => $val)
+		$stats[$key] = 0;
+}
+
+foreach($p->backlogItems as $backlogItem)
+{
+	if($backlogItem->releaseID > 0)
+		continue;
+	if($backlogItem->hasTag($IT))
+		continue;
+
+	$pts = $backlogItem->getEstimate();
+	if($pts < 0) $pts = 0;
+
+	$stats['Total'] += $pts;
+	if($backlogItem->sprintID > 0)
+		$stats[$backlogItem->getSprint()->name] += $pts;
+
+	if($backlogItem->isDone()) {
+		$stats['Done'] += $pts;
+		continue;
+	}
+	if($backlogItem->sprintID == 0)
+		$stats['ToDo-UNASSIGNED'] += $pts;
+
+	$stats['Todo'] += $pts;
+
+	if($backlogItem->hasTag($SP)) {
+		$stats['ToDo-SP'] += $pts;
+		continue;
+	}
+	if($backlogItem->hasTag($SIM)
+	|| strpos($backlogItem->name, 'Cluster') !== FALSE
+	|| strpos($backlogItem->name, 'Applicatie') !== FALSE) {
+		$stats['ToDo-Cluster'] += $pts;
+		continue;
+	}
+
+}
+fputcsv($out, [ 'WITHOUT RELEASE' ] + $stats, ';');
+fclose($out);
