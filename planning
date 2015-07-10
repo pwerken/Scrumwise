@@ -27,6 +27,9 @@ fputcsv($out, [ "#release" ] + array_keys($stats), ';');
 
 foreach($p->releases as $release)
 {
+	foreach($stats as $key => $val)
+		$stats[$key] = 0;
+
 	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
 	{
 		if($backlogItem->hasTag($IT))
@@ -59,12 +62,13 @@ foreach($p->releases as $release)
 			continue;
 		}
 
+		$stats['ToDo-Module'] += $pts;
 	}
 	fputcsv($out, [ $release->name ] + $stats, ';');
-	foreach($stats as $key => $val)
-		$stats[$key] = 0;
 }
 
+foreach($stats as $key => $val)
+	$stats[$key] = 0;
 foreach($p->backlogItems as $backlogItem)
 {
 	if($backlogItem->releaseID > 0)
@@ -99,6 +103,7 @@ foreach($p->backlogItems as $backlogItem)
 		continue;
 	}
 
+	$stats['ToDo-Module'] += $pts;
 }
 fputcsv($out, [ 'WITHOUT RELEASE' ] + $stats, ';');
 fclose($out);
