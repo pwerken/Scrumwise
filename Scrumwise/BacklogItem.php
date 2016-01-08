@@ -19,6 +19,7 @@ class BacklogItem
 		$this->data['releaseID'] = NULL;
 		$this->data['status'] = NULL;
 		$this->data['roughEstimate'] = (float)-1;
+		$this->data['roughEstimateUnit'] = NULL;
 		$this->data['estimate'] = NULL;
 		$this->data['usedTime'] = NULL;
 		$this->data['remainingWork'] = NULL;
@@ -56,6 +57,11 @@ class BacklogItem
 		$this->hasSetter['type'] = true;
 	}
 
+	public function getRelease() {
+		if($this->releaseID == -1)
+			return NULL;
+		return $this->project->getRelease($this->releaseID);
+	}
 	public function getSprint() {
 		return $this->project->getSprintByID($this->sprintID);
 	}
