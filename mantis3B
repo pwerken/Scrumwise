@@ -4,9 +4,10 @@
 
 require_once 'Scrumwise/Scrumwise.php';
 
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
 $p = Scrumwise::getProject();
 
-$pattern = '/Mantis3B#(\d+)( .(\w+).)?(.*)$/i';
+$pattern = '/Mantis3B#(\d+)( \((\w+)\))?(.*)$/i';
 
 $out = fopen('php://stdout', 'w');
 fputcsv($out,
