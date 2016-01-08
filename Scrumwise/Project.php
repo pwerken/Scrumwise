@@ -58,8 +58,11 @@ class Project
 		return $obj;
 	}
 	public function getBacklogItem($name) {
+		$id = is_numeric($name) ? (int)$name : -1;
 		foreach($this->backlogItems as $obj) {
-			if($obj->name == $name)
+			if($id != -1 && $obj->itemNumber == $id)
+				return $obj;
+			if($id == -1 && $obj->name == $name)
 				return $obj;
 		}
 		return NULL;
