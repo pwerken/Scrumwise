@@ -1,0 +1,42 @@
+#!/usr/bin/php
+<?php
+/* List of backlog items that have a redmine/mantis reference. */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
+$p = Scrumwise::getProject('KET-Afbouw');
+
+$patternRM = '/Redmine#(\d+)[: ].*$/i';
+$pattern3B = '/Mantis3B#(\d+)[: ].*$/i';
+$patternA4 = '/MantisA4#(\d+)[: ].*$/i';
+
+$out = fopen('php://stdout', 'w');
+fputcsv($out,
+	[ '#ScrumwiseID', 'Ticket'
+	, 'Sprint', 'Titel'
+	], ';');
+
+foreach($p->backlogItems as $bl)
+{
+	$data = [];
+	$data[0] = $bl->itemNumber;
+	$data[2] = $bl->getSprint() ? $bl->getSprint()->name : '';
+	$data[3] = $bl->name;
+
+	$lines = explode("\n", $bl->description);
+	foreach($lines as $line)
+	{
+		$data[1] = '';
+		$matches = [];
+		if(preg_match($patternRM, $line, $matches))
+			$data[1] = 'redmine#'.$matches[1];
+		if(preg_match($patternA4, $line, $matches))
+			$data[1] = 'mantisA4#'.$matches[1];
+		if(preg_match($pattern3B, $line, $matches))
+			$data[1] = 'mantis3B#'.$matches[1];
+
+		if(!empty($data[1]))
+			fputcsv($out, $data, ';');
+	}
+}

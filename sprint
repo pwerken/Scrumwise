@@ -4,7 +4,8 @@
 
 require_once 'Scrumwise/Scrumwise.php';
 
-$p = Scrumwise::getProject();
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
+$p = Scrumwise::getProject('KET-Afbouw');
 
 if(empty($argv[1])) {
 	$sprint = $p->getCurrentSprint();
