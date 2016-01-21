@@ -60,7 +60,7 @@ class BacklogItem
 	public function getRelease() {
 		if($this->releaseID == -1)
 			return NULL;
-		return $this->project->getRelease($this->releaseID);
+		return $this->project->getReleaseById($this->releaseID);
 	}
 	public function getSprint() {
 		return $this->project->getSprintByID($this->sprintID);

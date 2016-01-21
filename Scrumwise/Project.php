@@ -115,6 +115,15 @@ class Project
 		}
 		return NULL;
 	}
+	public function getReleaseById($releaseID) {
+		if(is_null($releaseID))
+			return NULL;
+		foreach($this->releases as $obj) {
+			if($obj->id == $releaseID)
+				return $obj;
+		}
+		return NULL;
+	}
 
 	public function getCurrentSprint() {
 		foreach($this->sprints as $obj) {
