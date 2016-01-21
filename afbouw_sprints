@@ -14,16 +14,19 @@ $patternA4 = '/MantisA4#(\d+)[: ].*$/i';
 $out = fopen('php://stdout', 'w');
 fputcsv($out,
 	[ '#ScrumwiseID', 'Ticket'
-	, 'Sprint', 'Titel'
+	, 'Release', 'Sprint', 'Titel'
 	], ';');
 
 foreach($p->backlogItems as $bl)
 {
 	$data = [];
 	$data[0] = $bl->itemNumber;
-	$data[2] = $bl->getSprint() ? $bl->getSprint()->name : '';
-	$data[3] = $bl->name;
+	$data[1] = '';
+	$data[2] = $bl->getRelease() ? $bl->getRelease()->name : '';
+	$data[3] = $bl->getSprint() ? $bl->getSprint()->name : '';
+	$data[4] = $bl->name;
 
+	$hit = false;
 	$lines = explode("\n", $bl->description);
 	foreach($lines as $line)
 	{
@@ -36,7 +39,11 @@ foreach($p->backlogItems as $bl)
 		if(preg_match($pattern3B, $line, $matches))
 			$data[1] = 'mantis3B#'.$matches[1];
 
-		if(!empty($data[1]))
+		if(!empty($data[1])) {
+			$hit = true;
 			fputcsv($out, $data, ';');
+		}
 	}
+	if(!$hit)
+		fputcsv($out, $data, ';');
 }

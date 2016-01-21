@@ -1,0 +1,46 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
+$p = Scrumwise::getProject('KET-Afbouw');
+
+$total[0] = 0;
+$total['Items'] = 0;
+$total['Punten'] = 0;
+#$total['Done']  = 0;
+#$total['Todo']  = 0;
+
+$out = fopen('php://stdout', 'w');
+fputcsv($out, [ "#release" ] + array_keys($total), ';');
+
+foreach($p->releases as $release)
+{
+	$stats = [];
+	foreach($total as $key => $val)
+		$stats[$key] = 0;
+
+	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
+	{
+		$stats['Items']++;
+
+		$pts = $backlogItem->getEstimate();
+		if($pts < 0) $pts = 0;
+
+		$stats['Punten'] += $pts;
+
+#		if($backlogItem->isDone()) {
+#			$stats['Done'] += $pts;
+#			continue;
+#		}
+#		$stats['Todo'] += $pts;
+	}
+	fputcsv($out, [ $release->name ] + $stats, ';');
+
+	foreach($stats as $key => $val)
+		$total[$key] += $val;
+}
+
+fputcsv($out, [], ';');
+fputcsv($out, [ "Total" ] + $total, ';');
+fclose($out);
