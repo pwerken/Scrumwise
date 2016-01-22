@@ -107,6 +107,24 @@ class Project
 
 		return $bs;
 	}
+	public function getBacklogItemsByTag($tag) {
+		if(is_string($tag)) {
+			$tag = $this->getTag($tag);
+		}
+		if(!($tag instanceof Tag)) {
+			echo "Could not find Tag '$tag'\n";
+			die;
+		}
+
+		$bs = [];
+		foreach($this->backlogItems as $b) {
+			if($b->hasTag($tag)) {
+				$bs[] = $b;
+			}
+		}
+
+		return $bs;
+	}
 
 	public function getRelease($name) {
 		foreach($this->releases as $obj) {
