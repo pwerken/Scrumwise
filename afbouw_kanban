@@ -14,6 +14,14 @@ fputcsv($out,
 	, 'Titel'
 	], ';');
 
+$states = [];
+$states['To do'] = 0;
+$states['Analysis'] = 0;
+$states['Development'] = 0;
+$states['Test'] = 0;
+$states['Done'] = 0;
+$states['Total'] = 0;
+
 foreach($p->backlogItems as $bl)
 {
 	$data = [];
@@ -35,5 +43,14 @@ foreach($p->backlogItems as $bl)
 	{
 		$data[3] = $t->getBoardColumn()->name;
 		fputcsv($out, $data, ';');
+
+		$states[$data[3]]++;
+		$states['Total']++;
 	}
+}
+
+fputcsv($out, [], ';');
+
+foreach($states as $state => $val) {
+	fputcsv($out, [$state, $val], ';');
 }
