@@ -3,6 +3,8 @@
 require_once 'ScrumwiseObject.php';
 require_once 'Taggable.php';
 require_once 'BacklogItem.php';
+require_once 'Board.php';
+require_once 'BoardColumn.php';
 require_once 'Project.php';
 require_once 'Release.php';
 require_once 'Sprint.php';
@@ -107,6 +109,7 @@ class Scrumwise
 							, 'Project.releases'
 							, 'Project.tags'
 							, 'Project.sprints'
+							, 'Project.boards'
 							, 'BacklogItem.tasks'
 							))
 				]);

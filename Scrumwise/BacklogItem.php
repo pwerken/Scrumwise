@@ -60,13 +60,25 @@ class BacklogItem
 	public function getRelease() {
 		if($this->releaseID == -1)
 			return NULL;
-		return $this->project->getReleaseById($this->releaseID);
+		return $this->project->getRelease($this->releaseID);
 	}
 	public function getSprint() {
-		return $this->project->getSprintByID($this->sprintID);
+		return $this->project->getSprint($this->sprintID);
+	}
+	public function getBoard() {
+		if($this->sprintID)
+			return NULL;
+
+		return $this->project->getBoard($this->boardID);
+	}
+	public function getBoardColumn() {
+		if($this->sprintID || !$this->boardColumnID)
+			return NULL;
+
+		return $this->getBoard()->getBoardColumnById($this->boardColumnID);
 	}
 	public function getTeam() {
-		return $this->project->getTeamByID($this->teamID);
+		return $this->project->getTeam($this->teamID);
 	}
 
 	public function getEstimate() {

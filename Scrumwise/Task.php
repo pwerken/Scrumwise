@@ -45,4 +45,18 @@ class Task
 		$this->data['backlogItemID'] = $backlogItemID;
 		parent::create();
 	}
+
+	public function getBacklogItem() {
+		return $this->project->getBacklogItem($this->backlogItemID);
+	}
+	public function getBoardColumn() {
+		if(!$this->boardColumnID)
+			return NULL;
+
+		$b = $this->getBacklogItem()->getBoard();
+		if(!$b)
+			return NULL;
+
+		return $b->getBoardColumnByID($this->boardColumnID);
+	}
 }

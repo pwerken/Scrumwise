@@ -57,12 +57,11 @@ class Project
 		$obj->create($this->id);
 		return $obj;
 	}
-	public function getBacklogItem($name) {
-		$id = is_numeric($name) ? (int)$name : -1;
+	public function getBacklogItem($ref) {
 		foreach($this->backlogItems as $obj) {
-			if($id != -1 && $obj->itemNumber == $id)
-				return $obj;
-			if($id == -1 && $obj->name == $name)
+			if($obj->id == $ref
+			|| $obj->itemNumber == $ref
+			|| $obj->name == $ref)
 				return $obj;
 		}
 		return NULL;
@@ -126,18 +125,10 @@ class Project
 		return $bs;
 	}
 
-	public function getRelease($name) {
+	public function getRelease($ref) {
 		foreach($this->releases as $obj) {
-			if($obj->name == $name)
-				return $obj;
-		}
-		return NULL;
-	}
-	public function getReleaseById($releaseID) {
-		if(is_null($releaseID))
-			return NULL;
-		foreach($this->releases as $obj) {
-			if($obj->id == $releaseID)
+			if($obj->id   == $ref
+			|| $obj->name == $ref)
 				return $obj;
 		}
 		return NULL;
@@ -150,18 +141,18 @@ class Project
 		}
 		return NULL;
 	}
-	public function getSprint($name) {
+	public function getSprint($ref) {
 		foreach($this->sprints as $obj) {
-			if($obj->name == $name)
+			if($obj->id   == $ref
+			|| $obj->name == $ref)
 				return $obj;
 		}
 		return NULL;
 	}
-	public function getSprintById($sprintID) {
-		if(is_null($sprintID))
-			return NULL;
-		foreach($this->sprints as $obj) {
-			if($obj->id == $sprintID)
+
+	public function getBoard($ref) {
+		foreach($this->boards as $obj) {
+			if($obj->id == $ref)
 				return $obj;
 		}
 		return NULL;
@@ -181,11 +172,9 @@ class Project
 		return NULL;
 	}
 
-	public function getTeamByID($teamID) {
-		if(is_null($teamID))
-			return NULL;
+	public function getTeam($ref) {
 		foreach($this->teams as $obj) {
-			if($obj->id == $teamID)
+			if($obj->id == $ref)
 				return $obj;
 		}
 		return NULL;
