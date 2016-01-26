@@ -1,0 +1,377 @@
+#!/usr/bin/php
+<?php
+require_once 'Scrumwise/Scrumwise.php';
+
+$RM = // {{{
+[1493 => "Configuratie MTM kan niet in een FAT gecontroleerd worden omdat er dan geen configuratie aanwezig is."
+,2236 => "Levensduureisen"
+,4192 => "Testscript niet uitvoerbaar"
+,4595 => "Rail Netwachter niet in gedragsheet"
+,4601 => "Onderverdelers met Afgaande groepen van Hoofdverdeler"
+,4665 => "PLC Rechts problemen met redundante Profibus Netwerk"
+,4713 => "onjuiste kastpakketten T41 WKS kasten"
+,4800 => "Profibus netwerk niet stabiel."
+,4802 => "Brondocumenten niet laatste versie"
+,4812 => "Diverse cosmetische bevindingen"
+,4820 => "(RP) AfwWorkplace application crash"
+,5006 => "SAT document aanpassen"
+,5063 => "Deelsysteem storing icoon niet getoond voor detectiepunt storingen"
+,5070 => "SAT: Bij het herstellen van de communicatieverbinding tussen MTM-Koppeling en stuurprogramma, valt de verbinding opnieuw uit en komt weer vanzelf terug"
+,5091 => "MTM Koppeling meldt onverwacht 'initialisatie'"
+,5277 => "(RP) Wanneer vanuit VRI de knop naar plaatselijk wordt gezet en vervolgens naar rood wordt gestuurd geeft GUI aan dat de stand van de verkeerslichten ongeldig is"
+,5281 => "(RP) Bij het omhoog sturen van de slagbomen na onvoorwaardelijk neer, doven de verkeerslichten uit zichzelf. Is dit gewenst gedrag?"
+,5289 => "Indien een commando niet uitgevoerd kan worden blijft 3B/MAP in wacht toestand."
+,5295 => "Werkschakelaar wordt niet gemeld op de GUI"
+,5323 => "(RP) Stop Jockeypomp is auto-reset"
+,5363 => "Afspelen van een opgenomen beeld wordt niet gestopt als er een camera wordt opgeschakeld"
+,5382 => "FAT ABB3543: FAT testen afmaken"
+,5395 => "Master/Slave win control schakelt vaak om"
+,5461 => "STD IST VKF2 Veilige vluchtweg Testcase 02 aanpassen"
+,5462 => "STD IST VKF2 Veilige vluchtweg Testcase 05 aanpassen"
+,5463 => "STD IST VKF2 Veilige vluchtweg referentie documenten aanpassen"
+,5549 => "Uitsplitsing #5482: A: Opgeslagen beeld bevat artefacten, B: beeld valt weg bij afspelen"
+,5552 => "Uitsplitsing #5482: D: Jump selectie tijd op 31-12-1979, E: Wens huidige positie van weergave van opgeslagen beeld"
+,5612 => "(A) - Failsafe RIO + Profibus"
+,5625 => "STD IST VKF3 Voorkomen Onbeheerst Afsluiten Verkeersbuis referentie documenten aanpassen"
+,5632 => "Diverse testfouten in script STD-0033"
+,5666 => "Storing Luminantieregeling wordt gemeld ipv storing luminantiemeting"
+,5668 => "Storing eerste 200m 50-90% wordt niet gemeld op de GUI en MCU meldt ook geen failsafe stand van de DGG's"
+,5671 => "(RP) Het is niet mogelijk om een stand te 'freezen' op MCU"
+,5681 => "Storing SPD wordt niet getoond"
+,5692 => "Document referentie IIT VKF01 (ventilatie aanpassen)"
+,5696 => "sfNoodtelefoon"
+,5713 => "Bij obstakeldetectie meldt GUI dat Noodbediening NB is wegens een storing en dat de communicatie is uitgevallen"
+,5717 => "Slechte performance van PTZ van IM-camera's"
+,5723 => "RIO storingen worden in de GUI gemeld als storing Communicatie uitgevallen_xxx"
+,5762 => "IM-Camera is niet scherp te stellen"
+,5764 => "Benaming IM-camera's komt niet overeen met RAP"
+,5782 => "Testcase Brandklep vervalt"
+,5797 => "Status meldingen Intercom/Noodtelefoon worden niet vermeld"
+,5807 => "WORKAROUND: Hulpdienstpaneel reageert niet meer als deze uitgestuurd is"
+,5818 => "Knipperende driehoek van een deelsysteem alarm knippert alleen in de meldingenlijst correct."
+,5820 => "Als de verkeerslichten in de rechterbuis plaatselijk bediend zijn, dan zijn in het detailplattegrond de gekartelde lijntjes van Verkeerslicht 1 en 2 niet (goed) zichtbaar."
+,5821 => "Vorst beveiliging moet nog getest worden"
+,5822 => "Tracing stond tijdens het uitvoeren van de SAT nog uit"
+,5834 => "Wachtrij overvol blijft staan op GUI"
+,5859 => "IODB - CM instantielijst software _CO ipv _LF"
+,5863 => "Toerit zuid geeft op GUI slechts 1 speaker icoon actief terwijl er 5 a 6 staan."
+,5865 => "Tijdens afspelen boodschap lukt inbreken niet"
+,5874 => "Klep niet bestuurbaar op klep"
+,5876 => "TMX niet gereed, vluchtdeur meldt niet door"
+,5887 => "Workaround voor CCTV verkeersbuis: De terugmeld storingen van de camera commando's (Pan, tilt , zoom, focus, diafragma) zijn uitgeschakeld"
+,5953 => "ITO simulatie fout: interlock simulatie werkt niet correct"
+,6015 => "Storingen niet uniek geïdentificeerd"
+,6038 => "Te veel alarmmeldingen bij uitschakelen switch"
+,6051 => "Overschakelen van Master naar Slave HOM Omroep"
+,6098 => "Testscriptbevindingen IIT SOS Detecties & Projectering"
+,6104 => "Laagspanningsverdeler IO-lijsten - Correcties CM tags tbv IO-database import"
+,6110 => "Diverse problemen met de intercom's (benaming, plek op GUI, audio)"
+,6111 => "Toespreken van een sectie werkt niet op Rechts wanneer verkeersbuis Rechts in Calamiteit-Evacuatie toestand is gebracht"
+,6115 => "Verwarrende status melding bij openen van Kopdeur (Zuid)"
+,6118 => "Camera's geven regelmatig storing, valt automatisch weer af"
+,6148 => "Camera's CADO noord nog op hun definitieve plek"
+,6163 => "STD IST D&P CaDo, VRI, AFsluitboom... teststap van TC07 aanpassen"
+,6164 => "Bij een eerder geselecteerde camerabeeld, wordt bij het bevestigen van Calamiteit bedrijf niet de betreffende verkeerslichten opgeschakeld op het detailscherm"
+,6168 => "CM description in IO lijsten stemt niet overeen met CM instantielijst"
+,6174 => "Bij het creeren van een storingsmelding van de eindschakelaar, wordt op de GUI de melding Storing Eindstand gemeldt ipv CaDo eindstand wijkt af"
+,6184 => "Detectiepunten in storing/ disabled"
+,6199 => "GUI geeft de verkeerde locatie van de brandmelding aan"
+,6223 => "Géén melding kritisch bedrijf in de titelbalk na overgang naar Kritisch Bedrijf"
+,6227 => "Brondocumenten niet laatste versie"
+,6228 => "O&B GUI: Geen melding van kortsluitverklikker"
+,6231 => "Schakelaar Delft schakelt niet af bij spanningsloosheid"
+,6236 => "Na ingang kritisch bedrijf was CCTV Niet bedienbaar"
+,6237 => "Brondocumenten niet laatste versie"
+,6240 => "Verlichting is na 1 uur niet meer bedienbaar"
+,6250 => "De waardes van debietmeting tonen onbetrouwbare waardes"
+,6283 => "HF volgt niet automatisch na live boodschap (rechts)"
+,6304 => "Hulpdienst paneel geeft alleen blauw scherm"
+,6315 => "Geen zicht op intercom bij afsluitboom A20"
+,6320 => "Kleur omranding knop 'toespreken' graag groen ipv rood"
+,6356 => "Niet mogelijk om beelden naar een bepaalde tijd terug te spoelen"
+,6357 => "Niet constant witte camera zichtbaar op de GUI op de overzichtsplattegrond tijdens schouwen."
+,6363 => "Header pop-up Hulppost toont maar 1 verkeerskundig alarm"
+,6365 => "Ventilator wordt aangeschakeld na overschakelen van plaatselijk naar auto terwijl druk OK is (101Pa)"
+,6382 => "IODB: updaten IO/IDD Energie Tunnel"
+,6383 => "IODB: updaten IO/IDD Energie Middenspanningsverdelers"
+,6384 => "IODB: updaten IO/IDD Energie Laagspanningsverdelers"
+,6385 => "IODB: updaten IO/IDD Energie Netaansluiting"
+,6386 => "IODB: updaten IO/IDD Energie NoBreak"
+,6387 => "IODB: updaten IO/IDD Energie Transformator"
+,6390 => "Failsafe RIO signaal wordt bij terugkomst RIO communicatie false de eerste scan en leidt dit tot trip MCU"
+,6391 => "IODB: updaten IO/IDD Ventilatie verkeersbuis"
+,6392 => "IODB: updaten IO/IDD Luchtkwaliteitsmeter"
+,6393 => "IODB: updaten IO/IDD SOS"
+,6394 => "IODB: updaten IO/IDD Hulppost VB"
+,6397 => "IODB: updaten IO/IDD Bediening"
+,6399 => "IODB: updaten IO/IDD Energie NSA aansluiting"
+,6400 => "IODB: updaten IO/IDD Verlichting Veilige Ruimte"
+,6401 => "IODB: updaten IO/IDD Overdruk Veilige Ruimte"
+,6402 => "IODB: updaten IO/IDD Rij van Vluchtdeuren"
+,6403 => "IODB: updaten IO/IDD Dynamische Vluchtroute Indicatie"
+,6404 => "IODB: updaten IO/IDD MTM koppeling"
+,6406 => "IODB: updaten IO/IDD Verkeerslicht VB"
+,6407 => "IODB: updaten IO/IDD Verlichting Verkeerbuis"
+,6408 => "IODB: updaten IO/IDD Vloeistofpomp Installatie"
+,6409 => "IODB: updaten IO/IDD CADO"
+,6411 => "IODB: updaten IO/IDD CCTV Verkeersbuis"
+,6412 => "IODB: updaten IO/IDD Hulpdienstpaneel"
+,6415 => "IODB: updaten IO/IDD Omroep VB"
+,6416 => "IODB: updaten IO/IDD Omroep Veilige Ruimte"
+,6418 => "IODB: updaten IO/IDD Intercom"
+,6419 => "IODB: updaten IO/IDD Brandmeld en Ontruiming"
+,6420 => "IODB: updaten IO/IDD Noodbediennig Tunnel"
+,6421 => "IODB: updaten IO/IDD Kopdeur Veilige Ruimte"
+,6422 => "IODB: updaten IO/IDD Vluchtdeur Indicatie VB"
+,6423 => "IODB: updaten IO/IDD Overdrukvoorziening Grensruimte"
+,6424 => "IODB: updaten IO/IDD CCTV Dienstgebouw"
+,6425 => "IODB: updaten IO/IDD Beeldvoorziening Meldkamer"
+,6426 => "IODB: updaten IO/IDD Klimaat Dienstgebouw"
+,6427 => "IODB: updaten IO/IDD Toegang Dienstgebouw"
+,6428 => "IODB: updaten IO/IDD Inbraakalarm Dienstgebouw"
+,6429 => "IODB: updaten IO/IDD Verlichting Dienstgebouw"
+,6430 => "IODB: updaten IO/IDD Terreinverlichting"
+,6431 => "IODB: updaten IO/IDD Blusvoorziening Dienstgebouw"
+,6432 => "IODB: updaten IO/IDD Waarschuwingsinstallatie Dienstgebouw"
+,6466 => "Bij live toespreken in een tunnelbuis meerdere malen ???Storing schakeling DSP???."
+,6477 => "Starten van live toespreken duurt erg lang."
+,6486 => "Bij gaan naar calamiteit wordt de camera van de afsluitbomen niet op kanaal b gezet."
+,6493 => "Communicatie tussen Noodbedien PLC's herstelt niet automatisch"
+,6494 => "Audio level van CADO Rechts is te laag"
+,6535 => "On-onderdrukte melding wordt niet meer auto-onderdrukt"
+,6536 => "op de MAP: rode omranding bij knop 'toespreken actief' valt weg"
+,6541 => "Ventilator welke uit plaatselijke bediening wordt gehaald komt niet consequent in dezelfde toestand terug"
+,6542 => "Omroep blijft hangen op andere verkeersbuis als melding met eerder gebruikt cameranummer (van andere buis) wordt gebruikt"
+,6551 => "Op GUI kan 'Aan' worden geselecteerd voor een ventilator waarvan de werkschakelaar is ingeschakeld"
+,6553 => "SP lfvKRDG diverse bevindingen"
+,6561 => "omroep slecht te verstaan of verkeerde plek bij toespreken SOS."
+,6565 => "WORKAROUND: Gebouwverlichting gaat niet meer aan nadat deze m.b.v GUI is uitgeschakeld"
+,6568 => "Gui WVL geeft verwarend beeld van de werkelijheid"
+,6569 => "Melding Kritischbedrijf"
+,6570 => "DOC - Toegevoegde- en vervallen SRS eisen van Verlichting Veilige Ruimte verwerken in SDD"
+,6571 => "Storingen bij aanvang IIT"
+,6573 => "Timer tussen Kritisch bedrijf en Gestopt kritisch 60s is te kort"
+,6581 => "Tussentijds verandering van PBL"
+,6582 => "Energiedistributie berekende metingen vs gemeten waardes"
+,6584 => "Generator blijft in storing hangen"
+,6585 => "Beveiligingsblok verandert niet"
+,6587 => "Beveiligingsblok verandert niet"
+,6588 => "Beveiligingsblok verandert niet"
+,6602 => "verkeerskundig alarm toont niet bij Systeem Zicht"
+,6605 => "Lib A4DS_LFV72D_Toegangdienstgebouw"
+,6607 => "Patch: 3B / SP : Aansturing deur/hek"
+,6610 => "Stand Uit niet bedienbaar op GUI voor blusvoorziening"
+,6612 => "Niet te controleren of beeldregistratie opslag aan staat indien PLC is uitgeschakeld."
+,6615 => "Testscript stelt zaken in voor installaties welke op PLC algemeen zitten terwijl PLC Links of rechts wordt uitgezet"
+,6616 => "Hulpdienstpanelen geven niet het detailbeeld door of geven 'no image'"
+,6619 => "Camera's staan niet op preset 1 na inschakelen PLC en preset 1 niet juist geconfigureerd"
+,6626 => "Schouwen vanaf favorietenlijst werkt niet"
+,6628 => "Verlichting verkeersbuis in hand-8 ipv normaal bedrijfsvoering stand"
+,6629 => "Contour verlichting is aan ipv uit na PLC ui en aan cyclus"
+,6630 => "Testscript fout: er zijn geen bedieningen voor de geluidsbakens"
+,6631 => "Testscript fout: geen stand 'testen' voor blusvoorziening"
+,6633 => "Testscript fout: Lastige timing bij uitvoer van PLC uitval icm ASB's in beweging"
+,6634 => "Tunnelventilatie geeft niet de verwachte standen in verschillende situaties"
+,6637 => "Verlichting verkeersbuis niet op 'normaal bedrijfsvoering stand' nadat PLC is aangezet"
+,6650 => "Volume omroep (toespreken sectie) neemt na aanvang fors toe"
+,6655 => "IO/IDD update Telefoonvoorziening Tunnel"
+,6675 => "Bevestiging pop up calamiteit heeft rare tekens"
+,6676 => "Knopje aan/uit HDP heeft geen functie"
+,6684 => "Erg veel onbevestigde meldingen na inschakelen PLC algemeen"
+,6687 => "Na aanschakelen PLC (rechts) ventilatie stand inconsistentie"
+,6691 => "SOS LI aanduiding 'is' moet 'rs4' zijn"
+,6694 => "D&P op VRI met alle licht standen en LKM's nog niet uitgevoerd."
+,6704 => "toegang schaftruimte Z ontbreekt in overzicht systemen en detecties rechterkolom"
+,6706 => "IODB Instantiecode Zichtmeters aanpassen"
+,6710 => "Groene lamp knippert lichtjes mee in stand onveilig"
+,6742 => "Signaalgever in middenspanningsruimte in zuid lijkt een andere geluid geluid af te spelen"
+,6763 => "Toevoegen storing-spd aan lokale bediening"
+,6766 => "Inbraak alarm commando en status bevindingen FIBS tunnel"
+,6770 => "SOS meldingen worden toch gemeld terwijl 'meldingen gewenst' op 'nee' staat"
+,6774 => "Deuren die zich niet dicht melden"
+,6775 => "Alarm details tonen de ruimte van inbraak detectie niet"
+,6776 => "Wachttijd (de)activeren inbraakalarm staat op 20 seconden ipv 60"
+,6777 => "melding openstaande deuren op code bedienpaneel a.d.h.v. codes ipv tekst"
+,6778 => "Alarm (de)activeren in afzonderlijke zones wordt niet getoond op 3B-GUI"
+,6779 => "STORING_COMMUNICATIE_UITGEVALLEN komt niet op"
+,6782 => "horizontale koppeling-inbraakalarm opnieuw testen"
+,6785 => "STORING_ALGEMEEN na uitschakelen voeding gebouwverlichting komt niet op"
+,6786 => "STORING_COMMUNICATIE_UITGEVALLEN komt niet op"
+,6801 => "Input signalen 24V Interlock bewaking wordt niet gebruikt"
+,6802 => "Afspelen opgenomen sessie: Tijdens het afspelen van een sessie mag geen andere camera of sessie gestart worden door de knop 'Toon opgeslagen beelden'"
+,6807 => "Bij Niet gesloten deelverlichting worden de standen in de GUI direct overgenomen na het selecteren van de stand."
+,6808 => "Tijdens download van een PLC komen honderden storing op die na download weer afvallen"
+,6810 => "STD FAT Verlichting is niet gereviewed"
+,6812 => "ST of SO op 69,915 vs (links) zorgt voor onderdrukking SOS-sectie stroomafwaarts ipv stroomopwaarts"
+,6818 => "Workaround/PATCH: Verlichting veilige ruimte bereikt na download de transitiestatus niet"
+,6841 => "Beeldopslag: Indien een sessie wordt afgespeeld worden alle 'opgeschakelde' camera's onthouden"
+,6877 => "Deuren kunnen, vanuit besturing, niet ontgrendeld/vergrendeld worden"
+,6878 => "Op 3B is het mogelijk om een stand voor de deuren te kiezen"
+,6880 => "STORING_COMMUNICATIE_UITVAL komt niet op"
+,6881 => "Deelsysteemalarm wanneer een hek open staat"
+,6882 => "De meeste binnendeuren vallen heel moeilijk in slot"
+,6884 => "Bij openen van HP75R en HP76R en bevestiging op GUI wordt de correcte camera opgeschakeld, echter als live wordt toegesproken schakelt camera 120 en de bijbehorende sectie 16 op."
+,6888 => "Terreinverlichting dient te worden ingeschakeld bij uitval van het besturingssysteem"
+,6894 => "Afwezigheid van voeding op secundair inkooppunt moet waarschuwing in plaats van storing geven"
+,6902 => "Geselecteerde opname wordt niet getoond in de GUI"
+,6907 => "Initialisatiegedrag sub kritische functies"
+,6908 => "Initialisatie niet kritische functies"
+,6917 => "Ruimte N.103 en M.105 luchtbehandeling"
+,6929 => "De overgang van boodschap sectie afspelen naar boodschap VB afspelen werkt niet goed en gaat meteen naar boodschap VB herhalen HF."
+,6937 => "lus A4 63,558e lus 6 secundair geeft volle sluiting op aarde."
+,6947 => "TB-GUI Tranformator verwacht temperatuur input ipv tmp_hoog temp_alarm"
+,6948 => "gtbTransformator popup toont niet temperatuur_waarschuwing"
+,6981 => "de grensruimte overdruk staat altijd op plaatselijk bediend en geeft daar door altijd een alarmmelding op de WvL GUI"
+,6992 => "Waarschuwing PLC hoofdverdeler wordt niet getriggerd"
+,6999 => "Trillingswaardes worden niet correct getoond"
+,7001 => "gtbNiveaumeter: Configuratie elementen niet instelbaar door Tunnel Beheerder in GUI TB."
+,7006 => "gtoSOSsectie: bij links camera configuratie niet te wijzigen"
+,7007 => "Motorstroomstoring van een pomp in de Control Builder is niet volgens de SDD van het stuurprogramma gebouwd."
+,7012 => "Aanmaken van sessieomschrijving voor de eerste keer zorgt er voor dat sessie niet meer te selecteren is"
+,7019 => "TC09 niet uitvoerbaar"
+,7022 => "Geen alarm in de onbevestigde meldingenlijst wel een knipperende driehoek op GUI"
+,7027 => "GUI TBH: Inlogstatus van de recente gebruiker wordt niet getoond rechtsboven"
+,7028 => "Tekst ontbreekt naast Energievoorziening en Energiedistr."
+,7030 => "CM delta IDD IO versus 800XA"
+,7031 => "Verkeerskundig alarm verschijnt in de TB Meldingenlijst"
+,7033 => "Configuratie van Trafo temperatuur eruit of aanpassen"
+,7034 => "Bediening niet disabled voor TBH"
+,7037 => "Hulpposten in de ondersteunende verkeersbuis worden niet automatisch onderdrukt."
+,7038 => "CCTV DGB: Er staan geen benamingen in het beeld."
+,7039 => "CCTV DGB: Bij camera 402 gaat PTZ koppeling defect."
+,7040 => "CCTV DGB: Camera 201,202 (N1 en N2) schakelen niet op"
+,7041 => "CCTV DGB: Geen PTZ voor camera 301,302,401"
+,7042 => "CCTV DGB: Bij het schakelen vanaf een tunnelcamera naar DGB camera kun je niet terug naar de tunnelcamera."
+,7043 => "CCTV DGB: De terugkoppeling van op welk detailbeeld is opgeschakeld klopt niet bij 301 en 302"
+,7044 => "CCTV DGB: Presets kloppen niet."
+,7050 => "GUI TB: Deelsysteemstoring: SOS Rechts Storing Detector en statusmelding verschijnen NIET in de WVL Meldingenlijst"
+,7051 => "MTM Signaalgever storing in Tunnel: Re A04 G SG002"
+,7052 => "Statusweergave Overdrukvoorziening Grensruimte niet correct en geeft misleidend beeld aan eindgebruikers"
+,7086 => "Events van de ventillatie stuurprogramma worden niet gelogd in de PGIM server"
+,7096 => "Verschillende RDS berichten per tunnelbuis geconstateerd"
+,7097 => "Technisch beheerder kan niet hand onderdrukte medlingen opheffen"
+,7098 => "GUI TB: Waarschuwing motorstroom symbool verschijnt NIET in de linker en rechter deelscherm bij Tu-> Vloeistofpompinstallatie"
+,7099 => "gtbPomp: Configuratie elementen zijn NIET wijzigbaar door Tunnel Beheerder"
+,7100 => "In TB-GUI worden niet correcte iconen gebruikt bij waarschuwingen"
+,7101 => "GUI TB en gtbpomp: Deelsysteem alarm symbool op basis van de melding 'Vuilwaterpomp schakelen' verschijnt niet."
+,7102 => "GUI TB: mogelijk meerdere pop ups van verschillende ingelogde users actief."
+,7117 => "gtbNiveaumeter: Status Kelder loopt over alarm op 'niet actief' terwijl wel de kelder dreigt over te lopen."
+,7127 => "Camera blokkeren via Best_CCTV werkt niet"
+,7131 => "SP: DG047_13_X6521, reserve IO heeft functionaliteit gekregen"
+,7136 => "Niet functionele restpunten vluchtdeuren"
+,7138 => "Vloeistofpomp installatie in normaal bedrijf in auto-stand niet meer op leeghouden te krijgen/zetten"
+]; // }}}
+$add = // {{{
+[ 2236
+, 4192
+, 4601
+, 4665
+, 4713
+, 4800
+, 4802
+, 4812
+, 4820
+, 5006
+, 5070
+, 5091
+, 5277
+, 5281
+, 5295
+, 5323
+, 5461
+, 5462
+, 5463
+, 5625
+, 5632
+, 5668
+, 5671
+, 5692
+, 5713
+, 5762
+, 5764
+, 5782
+, 5818
+, 5821
+, 5822
+, 5865
+, 5876
+, 5953
+, 6015
+, 6098
+, 6110
+, 6111
+, 6163
+, 6164
+, 6174
+, 6227
+, 6231
+, 6236
+, 6237
+, 6240
+, 6250
+, 6304
+, 6315
+, 6320
+, 6356
+, 6365
+, 6418
+, 6477
+, 6536
+, 6542
+, 6565
+, 6568
+, 6610
+, 6612
+, 6615
+, 6619
+, 6628
+, 6630
+, 6631
+, 6633
+, 6634
+, 6637
+, 6694
+, 6710
+, 6742
+, 6774
+, 6776
+, 6777
+, 6782
+, 6802
+, 6882
+, 6917
+, 6937
+, 7019
+, 7096
+, 7098
+, 7099
+, 7101
+, 7102
+, 7117
+, 7127
+, 7131
+, 7136
+, 7138
+]; // }}}
+
+$p = Scrumwise::getProject('KET-Afbouw');
+
+foreach($add as $id) {
+	$name = $RM[$id];
+	$desc = 'Redmine#'.$id.': '.$name;
+	$link = 'http://cp.vialis.nl:82/redmine/issues/'.$id;
+
+	echo"$id: $name\n";
+	$b = $p->addBacklogitem($name);
+	$b->description = $desc;
+	$b->link = $link;
+	$b->setRoughEstimate(1, 'Points');
+	$b->type = 'Feature';
+
+	$b->addTask('Probleem analyse');
+	$b->addTask('Risico analyse');
+	$b->addTask('Concrete backlog items aanmaken/uitbreiden');
+
+#	exit;
+}
+

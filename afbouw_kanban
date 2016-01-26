@@ -1,0 +1,39 @@
+#!/usr/bin/php
+<?php
+/* List of backlog items that have a redmine/mantis reference. */
+
+require_once 'Scrumwise/Scrumwise.php';
+
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
+$p = Scrumwise::getProject('KET-Afbouw');
+
+$out = fopen('php://stdout', 'w');
+fputcsv($out,
+	[ '#ScrumwiseID'
+	, 'Release', 'Board', 'Column'
+	, 'Titel'
+	], ';');
+
+foreach($p->backlogItems as $bl)
+{
+	$data = [];
+	$data[0] = $bl->itemNumber;
+	$data[1] = $bl->getRelease() ? $bl->getRelease()->name : '';
+	$data[2] = $bl->getBoard()   ? $bl->getBoard()->name   : '';
+	$data[3] = '';
+	$data[4] = $bl->name;
+
+	if(empty($data[2])) {
+		continue;
+	}
+
+	if(count($bl->tasks) != 1) {
+		fputcsv($out, $data, ';');
+		continue;
+	}
+	foreach($bl->tasks as $t)
+	{
+		$data[3] = $t->getBoardColumn()->name;
+		fputcsv($out, $data, ';');
+	}
+}

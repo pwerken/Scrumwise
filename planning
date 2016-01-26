@@ -6,6 +6,7 @@ Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
 $p = Scrumwise::getProject();
 
 $IT  = $p->getTag('IT');
+$ITO = $p->getTag('ITO');
 $SIM = $p->getTag('SIM');
 $SP  = $p->getTag('SP');
 
@@ -32,7 +33,7 @@ foreach($p->releases as $release)
 
 	foreach($p->getBacklogItemsByRelease($release) as $backlogItem)
 	{
-		if($backlogItem->hasTag($IT))
+		if($backlogItem->hasTag($IT) || $backlogItem->hasTag($ITO))
 			continue;
 
 		$pts = $backlogItem->getEstimate();

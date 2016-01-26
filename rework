@@ -2,6 +2,7 @@
 <?php
 require_once 'Scrumwise/Scrumwise.php';
 
+Scrumwise::updateCache(getenv('SCRUMWISE_UPDATE'));
 $p = Scrumwise::getProject();
 $REWORK = $p->getTag('REWORK');
 $IT = $p->getTag('IT');

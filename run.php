@@ -2,21 +2,16 @@
 <?php
 require_once 'Scrumwise/Scrumwise.php';
 
-$p = Scrumwise::getProject();
+$p = Scrumwise::getProject('KET-Afbouw');
 
+foreach($p->getBacklogItemsByTag("Akkoord") as $bl) {
+	echo $bl->itemNumber
+	." ".($bl->getBoard() ? $bl->getBoard()->name : '-')
+//	." ".$bl->name
+	."\n";
+}
 exit;
 
-
-foreach($p->backlogItems as $bl) {
-	if(count($bl->tasks) > 0)
-		continue;
-
-	if($bl->sprintID > 0) {
-		echo "SKIP ".$bl->name."\n";
-		continue;
-	}
-	echo ">>>> ".$bl->name."\n";
-}
 
 function clusterZut() {
 	global $p;
