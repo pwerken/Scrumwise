@@ -44,7 +44,7 @@ foreach($p->backlogItems as $bl)
 		$data[3] = $t->getBoardColumn()->name;
 		fputcsv($out, $data, ';');
 
-		$states[$data[3]]++;
+		@$states[$data[3]]++;
 		$states['Total']++;
 	}
 }
